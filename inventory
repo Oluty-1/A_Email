@@ -1,1 +1,7 @@
-ansiblenode
+myserver:
+  ansible_host:
+  ansible_user: tayo
+  ansible_connection:local
+
+# [local]
+# localhost ansible_connection=local
