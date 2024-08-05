@@ -1,5 +1,5 @@
 ---
-- name: Mail via Ansible
+- name: Provisioning Server
   hosts: myserver
   become: yes
   gather_facts: yes
@@ -9,14 +9,22 @@
       apt:
         name: apache2
         state: present
+      register: install_apache_result
 
-    - name: Start Apache service
+    - debug:
+        var: install_apache_result.changed
+
+    - name: Start Apache
       service:
         name: apache2
         state: started
         enabled: yes
+      register: start_apache_result
 
-    - name: Sending an e-mail using Gmail SMTP servers
+    - debug:
+        var: start_apache_result.changed
+
+    - name: Sending an e-mail using mailtrap SMTP servers
       mail:
         host: smtp.mailtrap.io
         port: 587
@@ -24,5 +32,8 @@
         password: e6a01f8611bf26
         to: tayoefun@gmail.com
         subject: Ansible Task Completion Notification
-        body: Your .
+        body: |
+          The task "Install Apache" and "Start Apache" has been completed.
+          Install Apache changed status: {{ install_apache_result.changed }}
+          Start Apache changed status: {{ start_apache_result.changed }}
       delegate_to: localhost
